@@ -4,6 +4,7 @@ package it.codeatlas.werca;
 import android.content.Intent;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.text.format.Time;
 import android.util.Log;
 
 
@@ -29,11 +30,15 @@ public class WerCANotificationListenerService extends NotificationListenerServic
     public static final String INTENT_EXTRA  = "ELP_data";
 
 
+
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
     //TODO: Ottenere lista completa delle notifiche
+        Time now = new Time();
         ELP_data = new char[20];
         ELP_data[0] = 'A';
+
         mStatusbarNotification = sbn;
         Log.d(TAG, "Getting Notification");
         currentNotificationPkg = mStatusbarNotification.getPackageName();
@@ -59,19 +64,25 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         }
         Log.d(TAG,"Added. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
-
+        now.setToNow();
+        ELP_data[10] = (char) now.hour;
+        ELP_data[11] = ':';
+        ELP_data[12] = (char) now.minute;
 
         Intent intent = new Intent();
         intent.setAction(INTENT_ACTION);
         intent.putExtra(INTENT_EXTRA,ELP_data);
         sendBroadcast(intent);
         Log.d(TAG,"Ho fatto un broadcast");
-        Log.d(TAG,intent.toString());
+        //Log.d(TAG,intent.toString());
+        Log.d(TAG,"ELP " + new String(ELP_data));
 
     }
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
+        Time now = new Time();
+        ELP_data[0] = 'A';
         mStatusbarNotification = sbn;
         Log.e(TAG, "Getting Notification");
         currentNotificationPkg = mStatusbarNotification.getPackageName();
@@ -97,12 +108,19 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         }
         Log.v(TAG,"REMOVED. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
+
+        now.setToNow();
+        ELP_data[10] = (char) now.hour;
+        ELP_data[11] = ':';
+        ELP_data[12] = (char) now.minute;
+
         Intent intent = new Intent();
         intent.setAction(INTENT_ACTION);
         intent.putExtra(INTENT_EXTRA,ELP_data);
         sendBroadcast(intent);
         Log.d(TAG,"Ho fatto un broadcast");
         Log.d(TAG,intent.toString());
+        Log.d(TAG,"ELP " + new String(ELP_data));
         //sendELP(ELP_data);
 
     }
