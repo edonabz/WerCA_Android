@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 public class MyActivity extends Activity {
@@ -32,7 +33,8 @@ public class MyActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_info) {
+            Toast.makeText(this, "Info Button pressed", Toast.LENGTH_SHORT ).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

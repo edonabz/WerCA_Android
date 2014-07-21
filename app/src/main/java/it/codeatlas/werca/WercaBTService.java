@@ -51,6 +51,9 @@ public class WercaBTService extends BluetoothLeService {
                         bleUARTsend(new String(ELP_data).getBytes());
                 } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
 
+                    Log.d(TAG,"INTENT: " + intent);
+                    //Log.d(TAG,"getDataString--> " + intent.getDataString());
+                    Log.d(TAG,"intent.getStringExtra(TelephonyManager.EXTRA_STATE)--> " +  intent.getStringExtra(TelephonyManager.EXTRA_STATE));
                     //CHIAMATA IN ARRIVO
                     incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     Log.d(TAG,"EXTRA_INCOMING_NUMBER = " + incomingNumber);
