@@ -51,7 +51,10 @@ public class WercaBTService extends BluetoothLeService {
                     if(ELP_data != null)
                         bleUARTsend(new String(ELP_data).getBytes());
                 } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
-                    TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+                    incomingName = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                    Log.d(TAG,"EXTRA_INCOMING_NUMBER = " + incomingName);
+
+/*                    TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
                     tm.listen(new PhoneStateListener() {
                         @Override
                         public void onCallStateChanged(int state, String incomingNumber) {
@@ -77,7 +80,7 @@ public class WercaBTService extends BluetoothLeService {
                                 Log.d(TAG,"Sent incoming number");
                             }
                         }
-                    }, PhoneStateListener.LISTEN_CALL_STATE);
+                    }, PhoneStateListener.LISTEN_CALL_STATE);*/
                 }
 
 
