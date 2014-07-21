@@ -77,6 +77,19 @@ public class WercaBTService extends BluetoothLeService {
                         bleUARTsend(new String(ELP_data).getBytes());
                         Log.d(TAG,"Sent incoming NAME" + new String(ELP_data));
                     }
+
+                    //TODO: non funziona se la chiamata viene accettata o rifiutata
+                    //WORKAROUND
+                    if(TelephonyManager.EXTRA_STATE_OFFHOOK.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE))){
+                        //IN CHIAMATA
+                        bleUARTsend(new String("B" + incomingNumber).getBytes());
+                        bleUARTsend(new String("C  DIALING...").getBytes());
+                        Log.d(TAG,"In chiamata");
+                    }
+
+                    //IDLE
+                    if(TelephonyManager.EXTRA_STATE_IDLE.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE)))
+                        bleUARTsend(new String("A").getBytes());
                 }
             }
         };
