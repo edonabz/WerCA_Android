@@ -50,4 +50,8 @@ public class MyActivity extends Activity {
 
     }
 
+    public void resetNotifications(View arg0) {
+
+    }
+
 }
