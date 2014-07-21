@@ -43,39 +43,35 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         Log.d(TAG, "Getting Notification");
         currentNotificationPkg = mStatusbarNotification.getPackageName();
 
-        if (PKG_DIALER.equals(currentNotificationPkg)){
-            //VEDREMO
-        }
-        else if(PKG_MMS.equals(currentNotificationPkg)){
-            num_msg++;
-            ELP_data[1] = (char) ('0' + num_msg);
-        }
-        else if (PKG_PHONE.equals(currentNotificationPkg)){
-            num_calls++;
-            ELP_data[2] = (char) ('0' + num_calls);
-        }
-        else if (PKG_GMAIL.equals(currentNotificationPkg)){
-            num_email++;
-            ELP_data[3] = (char) ('0' + num_email);
-        }
-        else{
-            num_other++;
-            ELP_data[4] =  (char) ('0' + num_other);
-        }
-        Log.d(TAG,"Added. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
+        if (!PKG_DIALER.equals(currentNotificationPkg)) {
+            if (PKG_MMS.equals(currentNotificationPkg)) {
+                num_msg++;
+                ELP_data[1] = (char) ('0' + num_msg);
+            } else if (PKG_PHONE.equals(currentNotificationPkg)) {
+                num_calls++;
+                ELP_data[2] = (char) ('0' + num_calls);
+            } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
+                num_email++;
+                ELP_data[3] = (char) ('0' + num_email);
+            } else {
+                num_other++;
+                ELP_data[4] = (char) ('0' + num_other);
+            }
+            Log.d(TAG, "Added. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
-        now.setToNow();
-        ELP_data[10] = (char) now.hour;
-        ELP_data[11] = ':';
-        ELP_data[12] = (char) now.minute;
+            now.setToNow();
+            ELP_data[10] = (char) now.hour;
+            ELP_data[11] = ':';
+            ELP_data[12] = (char) now.minute;
 
-        Intent intent = new Intent();
-        intent.setAction(INTENT_ACTION);
-        intent.putExtra(INTENT_EXTRA,ELP_data);
-        sendBroadcast(intent);
-        Log.d(TAG,"Ho fatto un broadcast");
-        //Log.d(TAG,intent.toString());
-        Log.d(TAG,"ELP " + new String(ELP_data));
+            Intent intent = new Intent();
+            intent.setAction(INTENT_ACTION);
+            intent.putExtra(INTENT_EXTRA, ELP_data);
+            sendBroadcast(intent);
+            Log.d(TAG, "Ho fatto un broadcast");
+            //Log.d(TAG,intent.toString());
+            Log.d(TAG, "ELP " + new String(ELP_data));
+        }
 
     }
 
@@ -87,41 +83,37 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         Log.e(TAG, "Getting Notification");
         currentNotificationPkg = mStatusbarNotification.getPackageName();
 
-        if (PKG_DIALER.equals(currentNotificationPkg)){
-            //VEDREMO
-        }
-        else if(PKG_MMS.equals(currentNotificationPkg)){
-            num_msg--;
-            ELP_data[1] = (char) ('0' + num_msg);
-        }
-        else if (PKG_PHONE.equals(currentNotificationPkg)){
-            num_calls--;
-            ELP_data[2] = (char) ('0' + num_calls);
-        }
-        else if (PKG_GMAIL.equals(currentNotificationPkg)){
-            num_email--;
-            ELP_data[3] = (char) ('0' + num_email);
-        }
-        else{
-            num_other--;
-            ELP_data[4] =  (char) ('0' + num_other);
-        }
-        Log.v(TAG,"REMOVED. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
+        if (!PKG_DIALER.equals(currentNotificationPkg)) {
+            if (PKG_MMS.equals(currentNotificationPkg)) {
+                num_msg--;
+                ELP_data[1] = (char) ('0' + num_msg);
+            } else if (PKG_PHONE.equals(currentNotificationPkg)) {
+                num_calls--;
+                ELP_data[2] = (char) ('0' + num_calls);
+            } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
+                num_email--;
+                ELP_data[3] = (char) ('0' + num_email);
+            } else {
+                num_other--;
+                ELP_data[4] = (char) ('0' + num_other);
+            }
+            Log.v(TAG, "REMOVED. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
 
-        now.setToNow();
-        ELP_data[10] = (char) now.hour;
-        ELP_data[11] = ':';
-        ELP_data[12] = (char) now.minute;
+            now.setToNow();
+            ELP_data[10] = (char) now.hour;
+            ELP_data[11] = ':';
+            ELP_data[12] = (char) now.minute;
 
-        Intent intent = new Intent();
-        intent.setAction(INTENT_ACTION);
-        intent.putExtra(INTENT_EXTRA,ELP_data);
-        sendBroadcast(intent);
-        Log.d(TAG,"Ho fatto un broadcast");
-        Log.d(TAG,intent.toString());
-        Log.d(TAG,"ELP " + new String(ELP_data));
-        //sendELP(ELP_data);
+            Intent intent = new Intent();
+            intent.setAction(INTENT_ACTION);
+            intent.putExtra(INTENT_EXTRA, ELP_data);
+            sendBroadcast(intent);
+            Log.d(TAG, "Ho fatto un broadcast");
+            Log.d(TAG, intent.toString());
+            Log.d(TAG, "ELP " + new String(ELP_data));
+            //sendELP(ELP_data);
+        }
 
     }
 

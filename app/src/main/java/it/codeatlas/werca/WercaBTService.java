@@ -1,5 +1,6 @@
 package it.codeatlas.werca;
 
+import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -16,15 +17,13 @@ import android.util.Log;
 
 public class WercaBTService extends BluetoothLeService {
 
-    public static final String WERCA_BT_SERVICE = "it.codeatlas.werca.service.WercaBTService";
-
     private static final String TAG = WercaBTService.class.getSimpleName();
     public String mDeviceAddress = "CC:EF:01:31:BD:61";
 
     private BroadcastReceiver receiver;
     private IntentFilter filter, phoneFilter;
 
-    public String incomingName;
+    public String incomingNumber, incomingName;
 
     private char ELP_data[];
 
@@ -51,39 +50,31 @@ public class WercaBTService extends BluetoothLeService {
                     if(ELP_data != null)
                         bleUARTsend(new String(ELP_data).getBytes());
                 } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
-                    incomingName = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                    Log.d(TAG,"EXTRA_INCOMING_NUMBER = " + incomingName);
 
-/*                    TelephonyManager tm = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
-                    tm.listen(new PhoneStateListener() {
-                        @Override
-                        public void onCallStateChanged(int state, String incomingNumber) {
-                            super.onCallStateChanged(state, incomingNumber);
-                            Log.d(TAG,"incomingNumber = " + incomingNumber);
+                    //CHIAMATA IN ARRIVO
+                    incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                    Log.d(TAG,"EXTRA_INCOMING_NUMBER = " + incomingNumber);
 
-//                            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
-//                            Cursor cursor = getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, incomingNumber, null, null );
-//                            if(cursor.moveToFirst()){
-//                                incomingName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-//                            }
-//                            cursor.close();
-//
-//                            Log.d(TAG,"incomingName = " + incomingName);
-                            ELP_data = new String("B" + incomingNumber).toCharArray();
-                            if(ELP_data != null) {
-                                bleUARTsend(new String(ELP_data).getBytes());
-                                Log.d(TAG,"Sent incoming number");
-                            }
-                            ELP_data = new String("C" + incomingNumber).toCharArray();
-                            if(ELP_data != null) {
-                                bleUARTsend(new String(ELP_data).getBytes());
-                                Log.d(TAG,"Sent incoming number");
-                            }
-                        }
-                    }, PhoneStateListener.LISTEN_CALL_STATE);*/
+                    Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(incomingNumber));
+                    Cursor cursor = getContentResolver().query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, incomingNumber, null, null);
+                    if(cursor.moveToFirst()){
+                        incomingName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    }
+                    cursor.close();
+                    Log.d(TAG,"INCOMING NAME = " + incomingName);
+
+                    ELP_data = new String("B" + incomingNumber).toCharArray();
+                    if(ELP_data != null) {
+                        bleUARTsend(new String(ELP_data).getBytes());
+                        Log.d(TAG,"Sent incoming NUMBER" + new String(ELP_data));
+                    }
+
+                    ELP_data = new String("C" + incomingName).toCharArray();
+                    if(ELP_data != null) {
+                        bleUARTsend(new String(ELP_data).getBytes());
+                        Log.d(TAG,"Sent incoming NAME" + new String(ELP_data));
+                    }
                 }
-
-
             }
         };
         Log.d(TAG,"Creato broadcast receiver");
