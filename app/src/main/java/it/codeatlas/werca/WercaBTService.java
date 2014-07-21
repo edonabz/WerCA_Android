@@ -9,6 +9,8 @@ import android.util.Log;
 
 public class WercaBTService extends BluetoothLeService {
 
+    public static final String WERCA_BT_SERVICE = "it.codeatlas.werca.service.WercaBTService";
+
     private static final String TAG = WercaBTService.class.getSimpleName();
     public String mDeviceAddress = "CC:EF:01:31:BD:61";
 
@@ -46,4 +48,11 @@ public class WercaBTService extends BluetoothLeService {
         registerReceiver(receiver, filter);
     }
 
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(receiver);
+        disconnect();
+        close();
+        super.onDestroy();
+    }
 }

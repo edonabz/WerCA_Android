@@ -3,6 +3,7 @@ package it.codeatlas.werca;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,18 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void restartService(View arg0) {
+        stopService(new Intent(this, WercaBTService.class));
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                startService(new Intent(getApplicationContext(), WercaBTService.class));
+            }
+        }, 1000);
+
     }
 
 }
