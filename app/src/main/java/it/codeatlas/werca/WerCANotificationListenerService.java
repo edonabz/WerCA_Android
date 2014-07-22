@@ -46,19 +46,19 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         if (!PKG_DIALER.equals(currentNotificationPkg)) {
             if (PKG_MMS.equals(currentNotificationPkg)) {
                 num_msg++;
-                ELP_data[1] = (char) ('0' + num_msg);
             } else if (PKG_PHONE.equals(currentNotificationPkg)) {
                 num_calls++;
-                ELP_data[2] = (char) ('0' + num_calls);
             } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
                 num_email++;
-                ELP_data[3] = (char) ('0' + num_email);
             } else {
                 num_other++;
-                ELP_data[4] = (char) ('0' + num_other);
             }
             Log.d(TAG, "Added. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
+            ELP_data[1] = (char) ('0' + num_msg);
+            ELP_data[2] = (char) ('0' + num_calls);
+            ELP_data[3] = (char) ('0' + num_email);
+            ELP_data[4] = (char) ('0' + num_other);
             now.setToNow();
             ELP_data[10] = (char) now.hour;
             ELP_data[11] = ':';
@@ -86,19 +86,20 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         if (!PKG_DIALER.equals(currentNotificationPkg)) {
             if (PKG_MMS.equals(currentNotificationPkg)) {
                 num_msg--;
-                ELP_data[1] = (char) ('0' + num_msg);
             } else if (PKG_PHONE.equals(currentNotificationPkg)) {
                 num_calls--;
-                ELP_data[2] = (char) ('0' + num_calls);
             } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
                 num_email--;
-                ELP_data[3] = (char) ('0' + num_email);
             } else {
                 num_other--;
-                ELP_data[4] = (char) ('0' + num_other);
             }
             Log.v(TAG, "REMOVED. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
+
+            ELP_data[1] = (char) ('0' + num_msg);
+            ELP_data[2] = (char) ('0' + num_calls);
+            ELP_data[3] = (char) ('0' + num_email);
+            ELP_data[4] = (char) ('0' + num_other);
 
             now.setToNow();
             ELP_data[10] = (char) now.hour;
