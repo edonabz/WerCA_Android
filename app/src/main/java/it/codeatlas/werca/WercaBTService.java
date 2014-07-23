@@ -11,6 +11,12 @@ import android.telephony.TelephonyManager;
 import android.text.format.Time;
 import android.util.Log;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 
 public class WercaBTService extends BluetoothLeService {
 
@@ -29,6 +35,8 @@ public class WercaBTService extends BluetoothLeService {
     public static final String ELP_DATA  = "ELP_data";
     public static final String NEW_OUTGOING_CALL = "android.intent.action.NEW_OUTGOING_CALL";
 
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,6 +46,7 @@ public class WercaBTService extends BluetoothLeService {
             Log.d(TAG,"BT initialized");
             if(connect(mDeviceAddress))
                 Log.d(TAG,"Connected to " + mDeviceAddress);
+            sendTimeEveryMinute();
         }
 
         receiver = new BroadcastReceiver() {
@@ -153,5 +162,24 @@ public class WercaBTService extends BluetoothLeService {
 
         bleUARTsend(("C" + incomingName).getBytes());
         Log.d(TAG, "Sent incoming NAME " + "C" + incomingName);
+    }
+
+    public void sendTimeEveryMinute() {
+        final Runnable sendTime = new Runnable() {
+            public void run() {
+                ELP_data[0] = 'A';
+                Time now = new Time();
+                now.setToNow();
+                ELP_data[10] = (char) now.hour;
+                ELP_data[11] = ':';
+                ELP_data[12] = (char) now.minute;
+                bleUARTsend(new String(ELP_data).getBytes());
+            }
+        };
+        final ScheduledFuture<?> timerHandle =
+                scheduler.scheduleWithFixedDelay(sendTime, 1, 1, MINUTES);
+        scheduler.schedule(new Runnable() {
+            public void run() { timerHandle.cancel(true); }
+        }, 60 * 60, SECONDS);
     }
 }
