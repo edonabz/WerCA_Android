@@ -7,6 +7,13 @@ import android.service.notification.StatusBarNotification;
 import android.text.format.Time;
 import android.util.Log;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 
 public class WerCANotificationListenerService extends NotificationListenerService {
 
@@ -33,8 +40,16 @@ public class WerCANotificationListenerService extends NotificationListenerServic
     public static final String INTENT_ACTION = "it.codeatlas.werca.receiver.intent.action.ELPsend";
     public static final String INTENT_EXTRA  = "ELP_data";
 
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG,"WerCANotificationListenerService onCreate");
+        //Avvia pianificazione per invio segnale orario ogni minuto
+        sendTimeEveryMinute();
+    }
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
@@ -220,6 +235,30 @@ public class WerCANotificationListenerService extends NotificationListenerServic
             //sendELP(ELP_data);
         }
 */
+    }
+
+    public void sendTimeEveryMinute() {
+        final Runnable sendTime = new Runnable() {
+            public void run() {
+                ELP_data[0] = 'A';
+                Time now = new Time();
+                now.setToNow();
+                ELP_data[10] = (char) now.hour;
+                ELP_data[11] = ':';
+                ELP_data[12] = (char) now.minute;
+                Intent intent = new Intent();
+                intent.setAction(INTENT_ACTION);
+                intent.putExtra(INTENT_EXTRA, ELP_data);
+                sendBroadcast(intent);
+                //Log.d(TAG, "SENT broadcast " + intent.toString());
+                Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
+            }
+        };
+        final ScheduledFuture<?> timerHandle =
+                scheduler.scheduleWithFixedDelay(sendTime, 1, 1, MINUTES);
+        scheduler.schedule(new Runnable() {
+            public void run() { timerHandle.cancel(true); }
+        }, 60 * 60, SECONDS);
     }
 
 }

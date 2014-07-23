@@ -11,11 +11,6 @@ import android.telephony.TelephonyManager;
 import android.text.format.Time;
 import android.util.Log;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class WercaBTService extends BluetoothLeService {
@@ -24,7 +19,6 @@ public class WercaBTService extends BluetoothLeService {
     public String mDeviceAddress = "CC:EF:01:31:BD:61";
 
     private BroadcastReceiver receiver;
-    private IntentFilter filter, incomingCallFilter, outgoingCallFilter;
 
     public String incomingNumber, incomingName, outgoingNumber;
     public boolean incomingCall, inCallState;
@@ -35,7 +29,7 @@ public class WercaBTService extends BluetoothLeService {
     public static final String ELP_DATA  = "ELP_data";
     public static final String NEW_OUTGOING_CALL = "android.intent.action.NEW_OUTGOING_CALL";
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    //private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     public void onCreate() {
@@ -46,7 +40,7 @@ public class WercaBTService extends BluetoothLeService {
             Log.d(TAG,"BT initialized");
             if(connect(mDeviceAddress))
                 Log.d(TAG,"Connected to " + mDeviceAddress);
-            sendTimeEveryMinute();
+            //sendTimeEveryMinute();
         }
 
         receiver = new BroadcastReceiver() {
@@ -134,9 +128,9 @@ public class WercaBTService extends BluetoothLeService {
         };
 
         //Register receivers
-        filter = new IntentFilter(ACTION_ELP_SEND);
-        incomingCallFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-        outgoingCallFilter = new IntentFilter(NEW_OUTGOING_CALL);
+        IntentFilter filter = new IntentFilter(ACTION_ELP_SEND);
+        IntentFilter incomingCallFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+        IntentFilter outgoingCallFilter = new IntentFilter(NEW_OUTGOING_CALL);
 
         registerReceiver(receiver, filter);
         registerReceiver(receiver, incomingCallFilter);
@@ -164,6 +158,8 @@ public class WercaBTService extends BluetoothLeService {
         Log.d(TAG, "Sent incoming NAME " + "C" + incomingName);
     }
 
+    /*
+    //VECCHIO METODO INVIO PIANIFICATO ORARIO --> ORA NEL NOTIFICATION SERVICE
     public void sendTimeEveryMinute() {
         final Runnable sendTime = new Runnable() {
             public void run() {
@@ -181,5 +177,5 @@ public class WercaBTService extends BluetoothLeService {
         scheduler.schedule(new Runnable() {
             public void run() { timerHandle.cancel(true); }
         }, 60 * 60, SECONDS);
-    }
+    }*/
 }
