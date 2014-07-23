@@ -38,10 +38,8 @@ public class WerCANotificationListenerService extends NotificationListenerServic
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
-    //TODO: Ottenere lista completa delle notifiche
+
         Time now = new Time();
-        ELP_data = new char[20];
-        ELP_data[0] = 'A';
 
         notificationList = getActiveNotifications();
 
@@ -67,8 +65,10 @@ public class WerCANotificationListenerService extends NotificationListenerServic
 
             }
 
-            Log.d(TAG, "onNotificationPosted Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
+            //Log.d(TAG, "onNotificationPosted Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
+            ELP_data = new char[20];
+            ELP_data[0] = 'A';
             ELP_data[1] = (char) ('0' + num_msg);
             ELP_data[2] = (char) ('0' + num_calls);
             ELP_data[3] = (char) ('0' + num_email);
@@ -82,8 +82,8 @@ public class WerCANotificationListenerService extends NotificationListenerServic
             intent.setAction(INTENT_ACTION);
             intent.putExtra(INTENT_EXTRA, ELP_data);
             sendBroadcast(intent);
-            Log.d(TAG, "SENT broadcast " + intent.toString());
-            Log.d(TAG, "ELP_data = " + new String(ELP_data));
+            //Log.d(TAG, "SENT broadcast " + intent.toString());
+            Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
 
         }
 
@@ -133,8 +133,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Time now = new Time();
-        ELP_data = new char[20];
-        ELP_data[0] = 'A';
+
 
         notificationList = getActiveNotifications();
 
@@ -160,8 +159,10 @@ public class WerCANotificationListenerService extends NotificationListenerServic
 
             }
 
-            Log.d(TAG, "onNotificationRemoved Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
+            //Log.d(TAG, "onNotificationRemoved Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
 
+            ELP_data = new char[20];
+            ELP_data[0] = 'A';
             ELP_data[1] = (char) ('0' + num_msg);
             ELP_data[2] = (char) ('0' + num_calls);
             ELP_data[3] = (char) ('0' + num_email);
@@ -175,8 +176,8 @@ public class WerCANotificationListenerService extends NotificationListenerServic
             intent.setAction(INTENT_ACTION);
             intent.putExtra(INTENT_EXTRA, ELP_data);
             sendBroadcast(intent);
-            Log.d(TAG, "SENT broadcast " + intent.toString());
-            Log.d(TAG, "ELP_data = " + new String(ELP_data));
+            //Log.d(TAG, "SENT broadcast " + intent.toString());
+            Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
 
         }
 

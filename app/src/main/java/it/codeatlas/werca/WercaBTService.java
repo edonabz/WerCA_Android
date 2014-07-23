@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
+import android.text.format.Time;
 import android.util.Log;
 
 
@@ -46,7 +47,7 @@ public class WercaBTService extends BluetoothLeService {
                 //RECEIVER for ELP_data on NOTIFICATIONS
                 if(ACTION_ELP_SEND.equals(intent.getAction())){
                     inCallState = false;
-                    Log.d(TAG,"Ricevuto Broadcast");
+                    Log.d(TAG,"ELP broadcast received");
                     ELP_data = intent.getCharArrayExtra(ELP_DATA);
                     if(ELP_data != null) {
                         bleUARTsend(new String(ELP_data).getBytes());
@@ -56,21 +57,18 @@ public class WercaBTService extends BluetoothLeService {
                 //RECEIVER for INCOMING CALL
                 } else if (TelephonyManager.ACTION_PHONE_STATE_CHANGED.equals(intent.getAction())) {
                     inCallState = true;
-                    //CHIAMATA IN ARRIVO
+                    //INCOMING CALL
                     if(TelephonyManager.EXTRA_STATE_RINGING.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE))) {
                         incomingCall = true;
                         incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                        Log.d(TAG, "EXTRA_INCOMING_NUMBER = " + incomingNumber);
+                        //Log.d(TAG, "EXTRA_INCOMING_NUMBER = " + incomingNumber);
                         //Send incoming call number
                         bleUARTsend(("BI" + incomingNumber).getBytes());
                         Log.d(TAG, "Sent incoming NUMBER" + new String(ELP_data));
                         sendContactName(incomingNumber);
 
-                    } else
-                    //TODO: non funziona se la chiamata viene accettata o rifiutata
-                    //WORKAROUND
-                    if(TelephonyManager.EXTRA_STATE_OFFHOOK.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE))){
-                        //IN CHIAMATA
+                    } else if(TelephonyManager.EXTRA_STATE_OFFHOOK.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE))){
+                        //DURING THE CALL
                         Log.d(TAG,"CHIAMATA IN CORSO. incomingCall = " + incomingCall);
                         if(incomingCall) {
                             //outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
@@ -82,8 +80,17 @@ public class WercaBTService extends BluetoothLeService {
                         }
 
                     } else if(TelephonyManager.EXTRA_STATE_IDLE.equals(intent.getStringExtra(TelephonyManager.EXTRA_STATE))) {
+                        //IDLE
                         inCallState = false;
-                        bleUARTsend(("A").getBytes());
+                        //Set actual time and send empty notifications ELP_data
+                        ELP_data[0] = 'A';
+                        Time now = new Time();
+                        now.setToNow();
+                        ELP_data[10] = (char) now.hour;
+                        ELP_data[11] = ':';
+                        ELP_data[12] = (char) now.minute;
+                        bleUARTsend(new String(ELP_data).getBytes());
+                        //bleUARTsend(("A").getBytes());
                         Log.d(TAG,"EXTRA_STATE_IDLE");
                     }
 
@@ -91,12 +98,11 @@ public class WercaBTService extends BluetoothLeService {
 
 
                 } else if(NEW_OUTGOING_CALL.equals(intent.getAction())) {
-                    //CHIAMATA IN USCITA
+                    //OUTGOING CALL
                     inCallState = true;
                     incomingCall = false;
-                    Log.d(TAG,"CHIAMATA IN USCITA");
                     outgoingNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-                    Log.d(TAG,outgoingNumber);
+                    Log.d(TAG,"CHIAMATA IN USCITA" + outgoingNumber);
                     bleUARTsend(("BO" + outgoingNumber).getBytes());
                     sendContactName(outgoingNumber);
 
@@ -119,7 +125,6 @@ public class WercaBTService extends BluetoothLeService {
         };
 
         //Register receivers
-        Log.d(TAG,"Creato broadcast receiver");
         filter = new IntentFilter(ACTION_ELP_SEND);
         incomingCallFilter = new IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
         outgoingCallFilter = new IntentFilter(NEW_OUTGOING_CALL);
@@ -127,6 +132,7 @@ public class WercaBTService extends BluetoothLeService {
         registerReceiver(receiver, filter);
         registerReceiver(receiver, incomingCallFilter);
         registerReceiver(receiver, outgoingCallFilter);
+        Log.d(TAG,"Broadcast receivers registered");
     }
 
     @Override
