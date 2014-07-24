@@ -327,6 +327,7 @@ public class BluetoothLeService extends Service {
      *
      * @return A {@code List} of supported services.
      */
+
     public List<BluetoothGattService> getSupportedGattServices() {
         if (mBluetoothGatt == null) return null;
 
@@ -358,7 +359,7 @@ public class BluetoothLeService extends Service {
         characteristic.setValue(data);
         characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
         dati_inviati = mBluetoothGatt.writeCharacteristic(characteristic);
-        Log.d(TAG, "Dati inviati " + data.toString());
+        Log.d(TAG, "Dati inviati " + new String(data));
         return dati_inviati;
     }
 }

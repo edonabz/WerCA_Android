@@ -27,6 +27,8 @@ public class WerCANotificationListenerService extends NotificationListenerServic
     private static final String PKG_WHATSAPP = "com.whatsapp";
     private static final String PKG_TALK = "com.google.android.talk";
     private static final String PKG_GMAIL = "com.google.android.gm";
+    private static final String PKG_ANDROID = "android";
+
 
     private StatusBarNotification[] notificationList;
 
@@ -127,6 +129,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
                 } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
                     num_email++;
                 } else {
+                    if(!PKG_ANDROID.equals(sbn.getPackageName()))
                     num_other++;
                 }
 

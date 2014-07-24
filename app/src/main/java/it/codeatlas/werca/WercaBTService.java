@@ -40,6 +40,9 @@ public class WercaBTService extends BluetoothLeService {
     public void onCreate() {
         super.onCreate();
         ELP_data = new char[20];
+        for(int i = 1; i < 6; i++)
+            ELP_data[i] = '0';
+
         Log.d(TAG, "WercaBTService onCreate");
         if(initialize()){
             Log.d(TAG,"BT initialized");
