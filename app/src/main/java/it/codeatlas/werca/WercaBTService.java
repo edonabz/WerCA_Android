@@ -11,6 +11,11 @@ import android.telephony.TelephonyManager;
 import android.text.format.Time;
 import android.util.Log;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 
 
 public class WercaBTService extends BluetoothLeService {
@@ -29,7 +34,7 @@ public class WercaBTService extends BluetoothLeService {
     public static final String ELP_DATA  = "ELP_data";
     public static final String NEW_OUTGOING_CALL = "android.intent.action.NEW_OUTGOING_CALL";
 
-    //private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     public void onCreate() {
@@ -38,9 +43,9 @@ public class WercaBTService extends BluetoothLeService {
         Log.d(TAG, "WercaBTService onCreate");
         if(initialize()){
             Log.d(TAG,"BT initialized");
+            sendTimeEveryMinute();
             if(connect(mDeviceAddress))
                 Log.d(TAG,"Connected to " + mDeviceAddress);
-            //sendTimeEveryMinute();
         }
 
         receiver = new BroadcastReceiver() {
@@ -158,8 +163,8 @@ public class WercaBTService extends BluetoothLeService {
         Log.d(TAG, "Sent incoming NAME " + "C" + incomingName);
     }
 
-    /*
-    //VECCHIO METODO INVIO PIANIFICATO ORARIO --> ORA NEL NOTIFICATION SERVICE
+
+    //VECCHIO METODO INVIO PIANIFICATO ORARIO --> TESTING
     public void sendTimeEveryMinute() {
         final Runnable sendTime = new Runnable() {
             public void run() {
@@ -170,12 +175,13 @@ public class WercaBTService extends BluetoothLeService {
                 ELP_data[11] = ':';
                 ELP_data[12] = (char) now.minute;
                 bleUARTsend(new String(ELP_data).getBytes());
+                Log.d(TAG,"Sent scheduled time ELP= " + new String(ELP_data));
             }
         };
         final ScheduledFuture<?> timerHandle =
-                scheduler.scheduleWithFixedDelay(sendTime, 1, 1, MINUTES);
+                scheduler.scheduleWithFixedDelay(sendTime, 10, 60, SECONDS);
         scheduler.schedule(new Runnable() {
             public void run() { timerHandle.cancel(true); }
         }, 60 * 60, SECONDS);
-    }*/
+    }
 }

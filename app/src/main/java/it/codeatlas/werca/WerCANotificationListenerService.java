@@ -7,12 +7,12 @@ import android.service.notification.StatusBarNotification;
 import android.text.format.Time;
 import android.util.Log;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.ScheduledExecutorService;
+//import java.util.concurrent.ScheduledFuture;
+//
+//import static java.util.concurrent.TimeUnit.MINUTES;
+//import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class WerCANotificationListenerService extends NotificationListenerService {
@@ -40,7 +40,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
     public static final String INTENT_ACTION = "it.codeatlas.werca.receiver.intent.action.ELPsend";
     public static final String INTENT_EXTRA  = "ELP_data";
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    //private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 
     @Override
@@ -48,7 +48,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
         super.onCreate();
         Log.d(TAG,"WerCANotificationListenerService onCreate");
         //Avvia pianificazione per invio segnale orario ogni minuto
-        sendTimeEveryMinute();
+        //sendTimeEveryMinute();
     }
 
     @Override
@@ -101,48 +101,6 @@ public class WerCANotificationListenerService extends NotificationListenerServic
             Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
 
         }
-
-
-
-        /*
-        //OLD METHOD
-        mStatusbarNotification = sbn;
-        Log.d(TAG, "Getting Notification");
-        currentNotificationPkg = mStatusbarNotification.getPackageName();
-
-        if (!PKG_DIALER.equals(currentNotificationPkg)) {
-            if (PKG_MMS.equals(currentNotificationPkg)) {
-                num_msg++;
-            } else if (PKG_PHONE.equals(currentNotificationPkg)) {
-                num_calls++;
-            } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
-                num_email++;
-            } else {
-                num_other++;
-            }
-            Log.d(TAG, "Added. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
-
-            ELP_data[1] = (char) ('0' + num_msg);
-            ELP_data[2] = (char) ('0' + num_calls);
-            ELP_data[3] = (char) ('0' + num_email);
-            ELP_data[4] = (char) ('0' + num_other);
-            now.setToNow();
-            ELP_data[10] = (char) now.hour;
-            ELP_data[11] = ':';
-            ELP_data[12] = (char) now.minute;
-
-            Intent intent = new Intent();
-            intent.setAction(INTENT_ACTION);
-            intent.putExtra(INTENT_EXTRA, ELP_data);
-            sendBroadcast(intent);
-            Log.d(TAG, "Ho fatto un broadcast");
-            //Log.d(TAG,intent.toString());
-            Log.d(TAG, "ELP " + new String(ELP_data));
-        }
-
-        */
-
-
     }
 
     @Override
@@ -195,70 +153,30 @@ public class WerCANotificationListenerService extends NotificationListenerServic
             Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
 
         }
-
-        /*Time now = new Time();
-        ELP_data[0] = 'A';
-        mStatusbarNotification = sbn;
-        Log.e(TAG, "Getting Notification");
-        currentNotificationPkg = mStatusbarNotification.getPackageName();
-
-        if (!PKG_DIALER.equals(currentNotificationPkg)) {
-            if (PKG_MMS.equals(currentNotificationPkg)) {
-                num_msg--;
-            } else if (PKG_PHONE.equals(currentNotificationPkg)) {
-                num_calls--;
-            } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
-                num_email--;
-            } else {
-                num_other--;
-            }
-            Log.v(TAG, "REMOVED. Call=" + num_calls + " SMS=" + num_msg + " Email=" + num_email + " Altro=" + num_other);
-
-
-            ELP_data[1] = (char) ('0' + num_msg);
-            ELP_data[2] = (char) ('0' + num_calls);
-            ELP_data[3] = (char) ('0' + num_email);
-            ELP_data[4] = (char) ('0' + num_other);
-
-            now.setToNow();
-            ELP_data[10] = (char) now.hour;
-            ELP_data[11] = ':';
-            ELP_data[12] = (char) now.minute;
-
-            Intent intent = new Intent();
-            intent.setAction(INTENT_ACTION);
-            intent.putExtra(INTENT_EXTRA, ELP_data);
-            sendBroadcast(intent);
-            Log.d(TAG, "Ho fatto un broadcast");
-            Log.d(TAG, intent.toString());
-            Log.d(TAG, "ELP " + new String(ELP_data));
-            //sendELP(ELP_data);
-        }
-*/
     }
 
-    public void sendTimeEveryMinute() {
-        final Runnable sendTime = new Runnable() {
-            public void run() {
-                ELP_data[0] = 'A';
-                Time now = new Time();
-                now.setToNow();
-                ELP_data[10] = (char) now.hour;
-                ELP_data[11] = ':';
-                ELP_data[12] = (char) now.minute;
-                Intent intent = new Intent();
-                intent.setAction(INTENT_ACTION);
-                intent.putExtra(INTENT_EXTRA, ELP_data);
-                sendBroadcast(intent);
-                //Log.d(TAG, "SENT broadcast " + intent.toString());
-                Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
-            }
-        };
-        final ScheduledFuture<?> timerHandle =
-                scheduler.scheduleWithFixedDelay(sendTime, 1, 1, MINUTES);
-        scheduler.schedule(new Runnable() {
-            public void run() { timerHandle.cancel(true); }
-        }, 60 * 60, SECONDS);
-    }
+//    public void sendTimeEveryMinute() {
+//        final Runnable sendTime = new Runnable() {
+//            public void run() {
+//                ELP_data[0] = 'A';
+//                Time now = new Time();
+//                now.setToNow();
+//                ELP_data[10] = (char) now.hour;
+//                ELP_data[11] = ':';
+//                ELP_data[12] = (char) now.minute;
+//                Intent intent = new Intent();
+//                intent.setAction(INTENT_ACTION);
+//                intent.putExtra(INTENT_EXTRA, ELP_data);
+//                sendBroadcast(intent);
+//                //Log.d(TAG, "SENT broadcast " + intent.toString());
+//                Log.d(TAG, "SENT ELP broadcast = " + new String(ELP_data));
+//            }
+//        };
+//        final ScheduledFuture<?> timerHandle =
+//                scheduler.scheduleWithFixedDelay(sendTime, 10, 60, SECONDS);
+//        scheduler.schedule(new Runnable() {
+//            public void run() { timerHandle.cancel(true); }
+//        }, 60 * 60, SECONDS);
+//    }
 
 }
