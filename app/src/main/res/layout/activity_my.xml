@@ -18,7 +18,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Reset  notifiche"
+            android:text="Reset notifiche"
             android:id="@+id/buttonResetNotifications"
             android:layout_row="0"
             android:layout_column="0"
