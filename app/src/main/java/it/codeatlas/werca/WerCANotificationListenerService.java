@@ -77,6 +77,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
                 } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
                     num_email++;
                 } else {
+                    if(!PKG_ANDROID.equals(currentNotificationPkg))
                     num_other++;
                 }
 
@@ -129,7 +130,7 @@ public class WerCANotificationListenerService extends NotificationListenerServic
                 } else if (PKG_GMAIL.equals(currentNotificationPkg)) {
                     num_email++;
                 } else {
-                    if(!PKG_ANDROID.equals(sbn.getPackageName()))
+                    if(!PKG_ANDROID.equals(currentNotificationPkg))
                     num_other++;
                 }
 
